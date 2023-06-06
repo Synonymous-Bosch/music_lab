@@ -1,5 +1,5 @@
 from db.run_sql import run_sql
-
+import pdb
 from models.album import Album
 import repositories.artist_repo as artist_repo
 
@@ -40,3 +40,26 @@ def select(id):
 def delete_all():
     sql = "DELETE FROM albums"
     run_sql(sql)
+
+def find_albums_by_artist(artist):
+    artist_albums = []
+    sql = "SELECT * FROM albums WHERE artist_id = %s"
+    values = [artist.id]
+
+    results = run_sql(sql, values)
+    if results:
+        for row in results:
+            album = Album(row["title"], row["genre"], row["artist_id"], row["id"])
+            artist_albums.append(album)
+    return artist_albums
+
+def update(album):
+    sql = 'UPDATE albums SET (title, genre, artist_id) = ROW(%s, %s, %s) WHERE id = %s'
+    values = [album.title, album.genre, album.artist.id, album.id]
+    run_sql(sql, values)
+
+def delete(id):
+    # pdb.set_trace()
+    sql = "DELETE FROM albums WHERE id = %s"
+    values = [id]
+    run_sql(sql, values)
