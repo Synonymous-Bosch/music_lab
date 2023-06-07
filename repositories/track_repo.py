@@ -32,3 +32,16 @@ def select_all():
 def delete_all():
     sql = "DELETE FROM tracklist"
     run_sql(sql)
+
+def track_by_album(album):
+    # pdb.set_trace()
+    album_tracks = []
+    sql = ("SELECT * FROM tracklist WHERE album_id = %s")
+    values = [album.id]
+    results = run_sql(sql, values)
+
+    if results:
+        for row in results:
+            track = Track(row["title"], row["artist_id"], row["album_id"], row["id"])
+            album_tracks.append(track)
+    return album_tracks
